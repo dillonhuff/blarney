@@ -34,4 +34,4 @@ isNone opt = opt.valid.inv
 
 -- |Get value from a valid Option, default value otherwise
 fromOption :: Bits t => t -> Option t -> t
-fromOption dflt opt = opt.valid ? (opt.val, dflt)
+fromOption dflt opt = if opt.valid then opt.val else dflt
