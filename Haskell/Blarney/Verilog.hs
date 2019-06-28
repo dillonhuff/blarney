@@ -121,6 +121,7 @@ data NetVerilog = NetVerilog { decl :: Maybe (Doc ()) -- declaration
                              }
 -- general helpers
 --------------------------------------------------------------------------------
+(<^>) a b = vsep [a,b]
 p = pretty
 argStyle = align . sep . (punctuate comma)
 remainCols f = pageWidth (\w@(AvailablePerLine l r) -> column (\c -> f (l-c)))
@@ -130,19 +131,19 @@ emitNameWidth :: Int -> (Int, Int) -> Doc ()
 emitNameWidth width wire = brackets (p (show $ width-1) <> colon <> p "0") <+> emitName wire
 emitVerilogModule :: String -> [Net] -> Doc ()
 emitVerilogModule modName netlst =
-     p "module" <+> p modName <+> parens emitIOs <> semi <> hardline
-  <> indent 2 ( emitComment "Declarations" <> hardline
-             <> emitCommentLine <> hardline
-             <> vsep (catMaybes $ map decl netVs) <> hardline
-             <> emitComment "Instances" <> hardline
-             <> emitCommentLine <> hardline
-             <> vsep (catMaybes $ map inst netVs) <> hardline
-             <> emitComment "Always block" <> hardline
-             <> emitCommentLine <> hardline
-             <> p "always" <+> p "@" <> parens (p "posedge clock") <+> p "begin" <> hardline
-             <> indent 2 ( vsep (catMaybes $ map alws netVs) <> hardline )
-             <> p "end" <> hardline)
-  <> p "endmodule"
+     p "module" <+> p modName <+> parens emitIOs <> semi
+  <^> indent 2 ( emitComment "Declarations"
+             <^> emitCommentLine
+             <^> vsep (catMaybes $ map decl netVs)
+             <^> emitComment "Instances"
+             <^> emitCommentLine
+             <^> vsep (catMaybes $ map inst netVs)
+             <^> emitComment "Always block"
+             <^> emitCommentLine
+             <^> p "always" <+> p "@" <> parens (p "posedge clock") <+> p "begin"
+             <^> indent 2 ( vsep (catMaybes $ map alws netVs))
+             <^> p "end")
+  <^> p "endmodule"
   where netVs = map genNetVerilog netlst
         netPrims = map netPrim netlst
         ins = [Input w s | (w, s) <- nub [(w, s) | Input w s <- netPrims]]
