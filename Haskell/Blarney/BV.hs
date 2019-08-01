@@ -22,7 +22,7 @@ are primitive component instances and whose edges are connections.
 1. K. Claessen, D. Sands.  Observable Sharing for Functional Circuit
 Description, ASIAN 1999.
 -}
-module Blarney.BV 
+module Blarney.BV
   (
     -- * Primitive component types
     InstId         -- Every component instance has a unique id
@@ -87,7 +87,7 @@ module Blarney.BV
   , dualRamBV      -- :: OutputWidth -> Maybe String
   , regFileReadBV  -- :: RegFileId -> OutputWidth -> BV -> BV
   , getInitBV      -- :: BV -> Integer
-  ) where 
+  ) where
 
 import Prelude
 
